@@ -1,0 +1,19 @@
+# Arquivos de Ambiente (Chaves de API e Senhas)
+.env
+
+# Banco de Dados Local
+*.db
+vagas.db
+
+# Ambiente Virtual do Python
+venv/
+env/
+ENV/
+
+# Arquivos temporários e Caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.vscode/
+.idea/
