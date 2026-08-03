@@ -1,12 +1,15 @@
 import time
 from datetime import datetime
+
 from dotenv import load_dotenv
+
+from src.database import Database
+from src.evaluator import avaliar_vaga  # Função de avaliação com a IA (OpenAI)
 
 # Importação dos módulos criados na pasta src/
 from src.fetcher import JobFetcher
-from src.database import Database
-from src.evaluator import avaliar_vaga  # Função de avaliação com a IA (OpenAI)
 from src.notifier import enviar_email_vaga
+from src.perfil import SCORE_MINIMO
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -16,9 +19,9 @@ INTERVALO_SEGUNDOS = INTERVALO_HORAS * 3600
 
 def executar_ciclo_agente():
     agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    print(f"\n==================================================")
+    print("\n==================================================")
     print(f"🤖 [AGENTE IA] Iniciando ciclo de busca: {agora}")
-    print(f"==================================================")
+    print("==================================================")
 
     # 1. Inicializa o banco de dados e o coletor de vagas
     db = Database()
@@ -56,8 +59,8 @@ def executar_ciclo_agente():
             print(f"📊 Resultado IA -> Match: {match} | Score: {score}%")
 
             # 5. Se der Match e atingir a pontuação mínima, envia e-mail via iCloud
-            if match and score >= 75:
-                print(f"🎯 Vaga compatível encontrada! Disparando e-mail de notificação...")
+            if match and score >= SCORE_MINIMO:
+                print("🎯 Vaga compatível encontrada! Disparando e-mail de notificação...")
                 enviar_email_vaga(
                     titulo_vaga=vaga["titulo"],
                     empresa=vaga["empresa"],

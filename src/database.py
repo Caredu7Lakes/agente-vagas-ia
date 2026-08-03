@@ -1,5 +1,5 @@
 import sqlite3
-import os
+
 
 class Database:
     def __init__(self, db_path="vagas.db"):

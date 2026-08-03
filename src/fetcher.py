@@ -1,11 +1,13 @@
 import os
+
 import requests
+
 try:
     from bs4 import BeautifulSoup
 except ImportError:
     BeautifulSoup = None
     print("⚠️ Biblioteca 'bs4' não encontrada. Instale com: pip install beautifulsoup4")
-from typing import List, Dict
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -31,7 +33,7 @@ class JobFetcher:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
 
-    def fetch_gupy_jobs(self) -> List[Dict]:
+    def fetch_gupy_jobs(self) -> list[dict]:
         """
         Busca vagas via API pública do portal da Gupy (Filtro: Remoto + Termos).
         """
@@ -61,7 +63,7 @@ class JobFetcher:
                 
         return jobs
 
-    def fetch_remotar_jobs(self) -> List[Dict]:
+    def fetch_remotar_jobs(self) -> list[dict]:
         """
         Scraping na plataforma Remotar.com.br.
         """
@@ -104,14 +106,14 @@ class JobFetcher:
 
         return jobs
 
-    def fetch_adzuna_jobs(self) -> List[Dict]:
+    def fetch_adzuna_jobs(self) -> list[dict]:
         """Busca granular na Adzuna por país e lista de palavras-chave."""
         jobs = []
         if not self.adzuna_app_id or not self.adzuna_app_key:
             print("⚠️ ADZUNA_APP_ID ou ADZUNA_APP_KEY ausentes no .env.")
             return jobs
 
-        paises = ['br', 'us']
+        paises = ['br']
         for pais in paises:
             base_url = f"https://api.adzuna.com/v1/api/jobs/{pais}/search/1"
             
@@ -142,7 +144,7 @@ class JobFetcher:
 
         return jobs
 
-    def fetch_serpapi_google_jobs(self) -> List[Dict]:
+    def fetch_serpapi_google_jobs(self) -> list[dict]:
         """Busca no Google Jobs via SerpApi."""
         if not self.serpapi_key:
             print("⚠️ SERPAPI_API_KEY ausente no .env. Pulando Google Jobs.")
@@ -182,7 +184,7 @@ class JobFetcher:
 
         return jobs
 
-    def fetch_mock_jobs(self) -> List[Dict]:
+    def fetch_mock_jobs(self) -> list[dict]:
         return [
             {
                 'id': 'mock_001',
@@ -195,7 +197,7 @@ class JobFetcher:
             }
         ]
 
-    def get_all_jobs(self) -> List[Dict]:
+    def get_all_jobs(self) -> list[dict]:
         print("🌐 Iniciando coleta MULTI-FONTE de vagas...")
         all_jobs = []
 
