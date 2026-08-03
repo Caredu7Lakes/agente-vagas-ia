@@ -92,5 +92,47 @@ SERPAPI_API_KEY="sua-chave-serpapi"
 5. Executar o Agente
 python main.py
 
+## Currículos no CI (base64-encoded secrets)
+
+Os arquivos `assets/curriculo_*.docx` **não são versionados** (contêm dados
+pessoais). Para que o agente possa anexá-los no GitHub Actions, eles são
+armazenados como secrets codificados em base64 e restaurados em disco no
+início do workflow.
+
+### Regerar os secrets
+
+Necessário sempre que um currículo for alterado — o secret é um snapshot
+congelado e não avisa quando fica desatualizado.
+
+**PowerShell (Windows):**
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("assets\curriculo_back.docx")) | Set-Clipboard
+```
+Colar em Settings > Secrets and variables > Actions > New repository secret.
+
+| Arquivo                      | Secret        |
+|------------------------------|---------------|
+| `assets/curriculo_back.docx` | `CV_BACK_B64` |
+| `assets/curriculo_eng.docx`  | `CV_ENG_B64`  |
+
+**Com GitHub CLI:**
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("assets\curriculo_back.docx")) | gh secret set CV_BACK_B64
+```
+
+**Bash/Linux/macOS:**
+```bash
+base64 -w0 assets/curriculo_back.docx | gh secret set CV_BACK_B64
+```
+
+### Restrições
+
+- Limite de 64 KB por secret. Base64 infla ~33%, então o `.docx` original
+  deve ficar abaixo de ~48 KB. Atual: 13 KB.
+- Não usar `>` no PowerShell para salvar o base64 em arquivo — a saída sai
+  em UTF-16 e corrompe o conteúdo. Use `Set-Clipboard` ou pipe direto.
+- O step `Restaurar currículos` roda `file` nos arquivos decodificados para
+  validar a integridade antes da execução do agente.
+
 📌 Licença
 Este projeto é de uso pessoal e educacional sob a licença MIT.

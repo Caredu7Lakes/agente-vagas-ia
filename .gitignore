@@ -17,3 +17,6 @@ __pycache__/
 .pytest_cache/
 .vscode/
 .idea/
+
+# curriculos
+assets/curriculo_*.docx
