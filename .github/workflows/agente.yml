@@ -42,6 +42,16 @@ jobs:
           sys.exit(f"secrets faltando: {f}" if f else 0)
           PY
 
+          - name: Restaurar currículos
+            env:
+              CV_BACK_B64: ${{ secrets.CV_BACK_B64 }}
+              CV_ENG_B64: ${{ secrets.CV_ENG_B64 }}
+            run: |
+              mkdir -p assets
+              echo "$CV_BACK_B64" | base64 -d > assets/curriculo_back.docx
+              echo "$CV_ENG_B64"  | base64 -d > assets/curriculo_eng.docx
+              file assets/curriculo_*.docx
+
       - name: Executar Agente de Vagas
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -51,6 +61,15 @@ jobs:
           EMAIL_IMAP_SERVER: ${{ secrets.EMAIL_IMAP_SERVER }}
           EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
         run: python -m src.main
+
+      - name: Executar Agente Candidato
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_IMAP_SERVER: ${{ secrets.EMAIL_IMAP_SERVER }}
+          EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+        run: python -m src.main_applicant
 
       - name: Salvar histórico do vagas.db
         if: always()
