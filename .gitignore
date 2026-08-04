@@ -3,7 +3,7 @@
 
 # Banco de Dados Local
 *.db
-vagas.db
+!vagas.db
 
 # Ambiente Virtual do Python
 venv/

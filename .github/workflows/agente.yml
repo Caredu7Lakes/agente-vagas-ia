@@ -36,21 +36,17 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASSWORD }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python - <<'PY'
-          import os, sys
-          f = [k for k in ("EMAIL_USER","EMAIL_PASS","OPENAI_API_KEY") if not os.getenv(k)]
-          sys.exit(f"secrets faltando: {f}" if f else 0)
-          PY
+          python -c "import os,sys; f=[k for k in ('EMAIL_USER','EMAIL_PASS','OPENAI_API_KEY') if not os.getenv(k)]; sys.exit(f'secrets faltando: {f}' if f else 0)"
 
-          - name: Restaurar currículos
-            env:
-              CV_BACK_B64: ${{ secrets.CV_BACK_B64 }}
-              CV_ENG_B64: ${{ secrets.CV_ENG_B64 }}
-            run: |
-              mkdir -p assets
-              echo "$CV_BACK_B64" | base64 -d > assets/curriculo_back.docx
-              echo "$CV_ENG_B64"  | base64 -d > assets/curriculo_eng.docx
-              file assets/curriculo_*.docx
+      - name: Restaurar currículos
+        env:
+          CV_BACK_B64: ${{ secrets.CV_BACK_B64 }}
+          CV_ENG_B64: ${{ secrets.CV_ENG_B64 }}
+        run: |
+          mkdir -p assets
+          echo "$CV_BACK_B64" | base64 -d > assets/curriculo_back.docx
+          echo "$CV_ENG_B64"  | base64 -d > assets/curriculo_eng.docx
+          ls -la assets/
 
       - name: Executar Agente de Vagas
         env:
@@ -74,6 +70,10 @@ jobs:
       - name: Salvar histórico do vagas.db
         if: always()
         run: |
+          if [ ! -f vagas.db ]; then
+            echo "vagas.db não existe — nada a commitar."
+            exit 0
+          fi
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add vagas.db
