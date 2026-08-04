@@ -1,8 +1,6 @@
-import time
 from datetime import datetime
 
-from dotenv import load_dotenv
-
+from src.config import settings
 from src.database import Database
 from src.evaluator import avaliar_vaga  # Função de avaliação com a IA (OpenAI)
 
@@ -11,11 +9,6 @@ from src.fetcher import JobFetcher
 from src.notifier import enviar_email_vaga
 from src.perfil import SCORE_MINIMO
 
-# Carrega as variáveis de ambiente do arquivo .env
-load_dotenv()
-
-INTERVALO_HORAS = 1
-INTERVALO_SEGUNDOS = INTERVALO_HORAS * 3600
 
 def executar_ciclo_agente():
     agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -90,17 +83,6 @@ def executar_ciclo_agente():
     finally:
         db.fechar()
 
-
-def main():
-    print("🚀 Agente de IA para Busca de Vagas Iniciado!")
-    print(f"⏰ O agente executará verificações a cada {INTERVALO_HORAS} hora(s).\n")
-
-    # Loop infinito para execução recorrente de hora em hora
-    while True:
-        executar_ciclo_agente()
-        print(f"\n😴 Agente em repouso. Próxima checagem em {INTERVALO_HORAS} hora...")
-        time.sleep(INTERVALO_SEGUNDOS)
-
-
 if __name__ == "__main__":
-    main()
+    settings.validar()
+    executar_ciclo_agente()
