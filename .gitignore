@@ -20,3 +20,7 @@ __pycache__/
 
 # curriculos
 assets/curriculo_*.docx
+
+#workflow 
+
+.ruff_cache/
