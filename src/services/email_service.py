@@ -95,7 +95,13 @@ class EmailReaderService:
                         body = payload.decode("utf-8", errors="ignore") if payload else ""
 
                     if not body:
-                        body = re.sub(r"<[^>]+>", " ", body_html)
+                        com_links = re.sub(
+                            r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>',
+                            r"\2 (\1)",
+                            body_html,
+                            flags=re.IGNORECASE | re.DOTALL,
+                        )
+                        body = re.sub(r"<[^>]+>", " ", com_links)
 
                     if termo not in f"{subject} {body}".lower():
                         continue

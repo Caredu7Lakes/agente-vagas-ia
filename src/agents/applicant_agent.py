@@ -77,6 +77,7 @@ class ApplicantAgent:
         5. Identifique se existe um e-mail VÁLIDO de recrutador/empresa (ignorar no-reply/automáticos).
         6. Classifique a TRILHA EXATAMENTE como 'ENG_IA', 'BACKEND_PYTHON' ou 'OUTRA'.
         7. Calcule o Score de aderência de 0 a 100%.
+        8. Extraia a URL de aplicação da vaga presente no corpo do e-mail (campo "url_vaga").
 
         Responda EXATAMENTE em formato JSON:
         {{
@@ -88,7 +89,8 @@ class ApplicantAgent:
             "senioridade_incompativel": true/false,
             "resumo_vaga": "string curto",
             "elegivel_br": true/false,
-            "localizacao": "string ou null"
+            "localizacao": "string ou null",
+            "url_vaga": "string ou null"
         }}
         """
         try:
@@ -108,7 +110,7 @@ class ApplicantAgent:
             trilha_valida = trilha_escolhida in ("ENG_IA", "BACKEND_PYTHON")
             elegivel_br = dados.get("elegivel_br", True)
 
-            if has_email and score_ok and senioridade_ok and trilha_valida and elegivel_br:
+            if score_ok and senioridade_ok and trilha_valida and elegivel_br:
                 return {
                     "aprovado": True,
                     "email_destino": dados["target_email"],
@@ -118,6 +120,7 @@ class ApplicantAgent:
                     "score": dados["score_aderencia"],
                     "resumo": dados["resumo_vaga"],
                     "localizacao": dados.get("localizacao"),
+                    "url_vaga": dados.get("url_vaga"),
                     "motivo": None,
                 }
 

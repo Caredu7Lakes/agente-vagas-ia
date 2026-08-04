@@ -31,6 +31,7 @@ def enviar_email_vaga(titulo_vaga: str, empresa: str, url_vaga: str, resumo: str
     <ul>{pontos_html}</ul>
     
     <p><a href="{url_vaga}" style="background-color: #007aff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Ver Vaga / Clicar para Aplicar</a></p>
+    <p><strong>Link:</strong> {url_vaga}</p>
     """
 
     msg.attach(MIMEText(corpo_html, 'html'))

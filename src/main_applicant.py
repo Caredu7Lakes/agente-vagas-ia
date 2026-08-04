@@ -1,4 +1,8 @@
+from collections import Counter
+
 from src.agents.applicant_agent import ApplicantAgent
+from src.config import settings
+from src.report import publicar_resumo
 from src.services.email_service import EmailReaderService
 from src.services.notify_service import NotifyService
 
@@ -33,9 +37,11 @@ def run_applicant_pipeline():
     total_descartadas = 0
     enviados_eng_ia = 0
     enviados_backend = 0
+    motivos_rejeicao = Counter()
 
     if total_encontradas == 0:
         print("ℹ️ Nenhum novo alerta de vaga não lido na caixa de entrada.")
+        publicar_resumo("🎯 Agente Candidato", {"Vagas encontradas": 0})
         return
 
     # 2. Processamento Inteligente
@@ -66,14 +72,25 @@ def run_applicant_pipeline():
                 resumo_vaga=avaliacao["resumo"]
             )
 
-            assunto_email = f"Candidatura: {avaliacao['cargo']}"
+            assunto_email = f"📋 Candidatura pronta: {avaliacao['cargo']}"
 
-            # Enviar e-mail anexando O CURRÍCULO CORRETO para a trilha
+            corpo = (
+                f"CARGO: {avaliacao['cargo']}\n"
+                f"TRILHA: {trilha}\n"
+                f"SCORE: {avaliacao['score']}%\n"
+                f"LINK: {avaliacao.get('url_vaga') or 'ver e-mail original da vaga'}\n"
+                f"CONTATO DIRETO: {avaliacao.get('email_destino') or 'não informado — aplicar pelo link'}\n"
+                f"\n{'=' * 50}\n"
+                f"CARTA DE APRESENTAÇÃO (copiar abaixo)\n"
+                f"{'=' * 50}\n\n"
+                f"{cover_letter}\n"
+            )
+
             sucesso = email_service.send_application_email(
-                to_email=avaliacao["email_destino"],
+                to_email=settings.EMAIL_USER,
                 subject=assunto_email,
-                cover_letter=cover_letter,
-                cv_path=cv_especifico
+                cover_letter=corpo,
+                cv_path=cv_especifico,
             )
 
             if sucesso:
@@ -83,16 +100,19 @@ def run_applicant_pipeline():
                     enviados_backend += 1
 
             notify_service.send_notification(
-                title=f"Candidatura: {avaliacao['cargo']}",
-                message=(
-                    f"Trilha: {trilha}\n"
-                    f"Match: {avaliacao['score']}%\n"
-                    f"Destino: {avaliacao['email_destino']}"
-                ),
-            )
+                    title=f"Candidatura pronta: {avaliacao['cargo']}",
+                    message=(
+                        f"Trilha: {trilha}\n"
+                        f"Match: {avaliacao['score']}%\n"
+                        f"Carta e CV no seu e-mail."
+                    ),
+                )
         else:
             total_descartadas += 1
-            print(f"🚫 VAGA DESCARTADA | Motivo: {avaliacao['motivo']}")
+            motivo = avaliacao["motivo"]
+            categoria = motivo.split("(")[0].split(":")[0].strip()
+            motivos_rejeicao[categoria] += 1
+            print(f"🚫 VAGA DESCARTADA | Motivo: {motivo}")
 
     # 3. Métricas Detalhadas do Funil
     total_enviadas = enviados_eng_ia + enviados_backend
@@ -109,6 +129,17 @@ def run_applicant_pipeline():
     print(f"📈 Taxa de Conversão do Funil      : {taxa_conversao:.1f}%")
     print("=" * 55 + "\n")
 
+    publicar_resumo(
+        "🎯 Agente Candidato",
+        {
+            "Vagas encontradas": total_encontradas,
+            "Descartadas": total_descartadas,
+            "Preparadas — Engenharia de IA": enviados_eng_ia,
+            "Preparadas — Backend Python": enviados_backend,
+            "Taxa de conversão": f"{taxa_conversao:.1f}%",
+        },
+        motivos_rejeicao,
+    )
 
 if __name__ == "__main__":
     run_applicant_pipeline()
