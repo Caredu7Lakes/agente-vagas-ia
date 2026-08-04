@@ -14,18 +14,15 @@ class Settings:
     EMAIL_BCC = os.getenv("EMAIL_BCC")
     IMAP_SERVER = os.getenv("EMAIL_IMAP_SERVER", "imap.mail.me.com")
     SMTP_SERVER = os.getenv("EMAIL_SMTP_SERVER", "smtp.mail.me.com")
-    SMTP_PORT = int(os.getenv("EMAIL_SMTP_PORT", 587))
+    SMTP_PORT = int(os.getenv("EMAIL_SMTP_PORT", "587"))
 
     ADZUNA_APP_ID = os.getenv("ADZUNA_APP_ID")
     ADZUNA_APP_KEY = os.getenv("ADZUNA_APP_KEY")
     SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
 
-    WHATSAPP_PHONE = os.getenv("WHATSAPP_PHONE")
-    WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
-
     NTFY_TOPIC = os.getenv("NTFY_TOPIC")
 
-    OBRIGATORIAS = ("OPENAI_API_KEY", "EMAIL_USER", "EMAIL_PASS", "NTFY_TOPIC")
+    OBRIGATORIAS = ("OPENAI_API_KEY", "EMAIL_USER", "EMAIL_PASS")
 
     @classmethod
     def validar(cls) -> None:

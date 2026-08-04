@@ -1,4 +1,3 @@
-import os
 
 import requests
 
@@ -8,9 +7,8 @@ except ImportError:
     BeautifulSoup = None
     print("⚠️ Biblioteca 'bs4' não encontrada. Instale com: pip install beautifulsoup4")
 
-from dotenv import load_dotenv
+from src.config import settings
 
-load_dotenv()
 
 class JobFetcher:
     def __init__(self):
@@ -25,9 +23,9 @@ class JobFetcher:
         ]
         
         # Chaves de API vindas do seu .env
-        self.adzuna_app_id = os.getenv("ADZUNA_APP_ID")
-        self.adzuna_app_key = os.getenv("ADZUNA_APP_KEY")
-        self.serpapi_key = os.getenv("SERPAPI_API_KEY")  # Usando o nome exato do seu .env
+        self.adzuna_app_id = settings.ADZUNA_APP_ID
+        self.adzuna_app_key = settings.ADZUNA_APP_KEY
+        self.serpapi_key = settings.SERPAPI_API_KEY  # Usando o nome exato do seu .env
         
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"

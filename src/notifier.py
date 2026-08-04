@@ -1,20 +1,18 @@
-import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from dotenv import load_dotenv
+from src.config import settings
 
-load_dotenv()
 
 def enviar_email_vaga(titulo_vaga: str, empresa: str, url_vaga: str, resumo: str, pontos_fortes: list):
-    sender = os.getenv("EMAIL_SENDER")
-    password = os.getenv("EMAIL_PASSWORD")
-    receiver = os.getenv("EMAIL_RECEIVER")
+    sender = settings.EMAIL_USER
+    password = settings.EMAIL_PASS
+    receiver = settings.EMAIL_RECEIVER
 
-    # Configurações do servidor SMTP do iCloud
-    smtp_host = "smtp.mail.me.com"
-    smtp_port = 587
+ # Configurações do servidor SMTP do iCloud
+    smtp_host = settings.SMTP_SERVER
+    smtp_port = settings.SMTP_PORT
 
     msg = MIMEMultipart()
     msg['From'] = sender

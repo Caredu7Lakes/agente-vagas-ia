@@ -56,6 +56,9 @@ jobs:
           EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
           EMAIL_IMAP_SERVER: ${{ secrets.EMAIL_IMAP_SERVER }}
           EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
         run: python -m src.main
 
       - name: Executar Agente Candidato
@@ -65,6 +68,8 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_IMAP_SERVER: ${{ secrets.EMAIL_IMAP_SERVER }}
           EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          EMAIL_BCC: ${{ secrets.EMAIL_BCC }}
         run: python -m src.main_applicant
 
       - name: Salvar histórico do vagas.db
