@@ -2,7 +2,7 @@ name: Executar Agente de Vagas IA
 
 on:
   schedule:
-    - cron: '17 11-20 * * 1-5'   # :17 de cada hora, 08:00-17:00 BRT   # 08:00 às 17:00 BRT, de hora em hora
+    - cron: '17 11,14,17,20 * * 1-5'   # 08h, 11h, 14h e 17h BRT
   workflow_dispatch:
 
 permissions:

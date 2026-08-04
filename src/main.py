@@ -8,6 +8,7 @@ from src.evaluator import avaliar_vaga  # Função de avaliação com a IA (Open
 from src.fetcher import JobFetcher
 from src.notifier import enviar_email_vaga
 from src.perfil import SCORE_MINIMO
+from src.report import publicar_resumo
 
 
 def executar_ciclo_agente():
@@ -21,8 +22,9 @@ def executar_ciclo_agente():
     fetcher = JobFetcher()
 
     try:
-        # 2. Coleta vagas da internet/APIs
+       # 2. Coleta vagas da internet/APIs
         vagas_coletadas = fetcher.get_all_jobs()
+        publicar_resumo("🌐 Coleta de vagas", fetcher.contagem_por_fonte)
         print(f"📥 Vagas retornadas pelas fontes: {len(vagas_coletadas)}")
 
         novas_vagas_processadas = 0

@@ -14,10 +14,13 @@ SCORE_MINIMO = 70
 
 PERFIL_CANDIDATO = """
 CANDIDATO: CARLOS EDUARDO DOS SANTOS FILHO
-- Perfil: Engenheiro de IA Júnior | Desenvolvedor Backend Python Júnior | QA de Automação
+- Perfil: Engenheiro de IA Júnior | Desenvolvedor Backend Python Júnior
+- Formação: CURSANDO Bacharelado em Inteligência Artificial (Univesp) e Tecnólogo em
+  DevOps (Anhanguera).
 - Modelo Obrigatório: 100% Remoto (Home Office)
 - Senioridade-alvo: Estágio, Trainee, Júnior, Assistente ou Pleno inicial
-- Localização: Brasil (Itatiba/SP). SEM autorização de trabalho nos EUA ou União Europeia.
+- Localização: Brasil (Itatiba/SP). Possui passaporte português — ELEGÍVEL para
+  trabalhar na União Europeia. SEM autorização de trabalho nos EUA.
 - Requisitos Principais: Python, FastAPI, SQLAlchemy, PostgreSQL, RAG, pgvector, FAISS,
   Docker, pytest, APIs LLM (OpenAI/Anthropic).
 - Diferenciais: HealthTech / Biotecnologia, CI/CD, AWS, arquiteturas de agentes.
@@ -28,11 +31,14 @@ REGRAS_COMUNS = """
 2. SENIORIDADE: Aceite apenas Estágio, Trainee, Júnior, Assistente ou Pleno.
    REJEITE Sênior, Sr., Specialist, Lead, Staff, Principal, Head, Diretor, Manager,
    Arquiteto e Especialista — inclusive quando o título usar abreviações (SR, SR.).
-3. GEOGRAFIA: O candidato reside no Brasil e não possui autorização de trabalho nos
-   EUA ou União Europeia. Rejeite vagas que exijam residência, presença física ou
-   work authorization fora do Brasil. Vagas remotas que aceitam contratação
-   internacional (PJ/contractor) são aceitáveis.
-4. ESCOPO: A vaga deve envolver Python e/ou o ecossistema de Engenharia de IA / Backend.
+3. GEOGRAFIA: O candidato reside no Brasil e tem cidadania portuguesa, o que permite
+   trabalhar na União Europeia. Rejeite apenas vagas que exijam autorização de trabalho
+   nos EUA, no Reino Unido ou residência física fora de Brasil e UE. Vagas remotas que
+   aceitam contratação internacional (PJ/contractor) são aceitáveis.
+4. FORMAÇÃO: o candidato está CURSANDO nível superior. Rejeite vagas que exijam
+   graduação já concluída como requisito obrigatório. Vagas que aceitam "cursando",
+   "em formação" ou que não mencionam formação são elegíveis.
+5. ESCOPO: A vaga deve envolver Python e/ou o ecossistema de Engenharia de IA / Backend.
 """
 
 # Guard determinístico: barra antes de gastar token com a LLM.

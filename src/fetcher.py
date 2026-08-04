@@ -1,4 +1,3 @@
-
 import requests
 
 try:
@@ -150,14 +149,22 @@ class JobFetcher:
 
         jobs = []
         url = "https://serpapi.com/search.json"
-        params = {
-            "engine": "google_jobs",
-            "q": "(Python OR 'AI Engineer' OR FastAPI) remoto",
-            "hl": "pt",
-            "gl": "br",
-            "api_key": self.serpapi_key
-        }
+        termos = [
+            "desenvolvedor python remoto",
+            "engenheiro de IA remoto",
+            "estagio desenvolvedor python remoto",
+            "trainee desenvolvedor remoto",
+        ]
 
+        for termo in termos:
+            params = {
+                "engine": "google_jobs",
+                "q": termo,
+                "hl": "pt-br",
+                "gl": "br",
+                "api_key": self.serpapi_key,
+            }
+        
         try:
             res = requests.get(url, params=params, timeout=20)
             if res.status_code == 200:
@@ -197,26 +204,39 @@ class JobFetcher:
 
     def get_all_jobs(self) -> list[dict]:
         print("🌐 Iniciando coleta MULTI-FONTE de vagas...")
+
+        fontes = {
+            "Adzuna": self.fetch_adzuna_jobs,
+            "Google Jobs": self.fetch_serpapi_google_jobs,
+            }
+
         all_jobs = []
+        self.contagem_por_fonte = {}
 
-        # Executa todas as fontes
-        all_jobs.extend(self.fetch_gupy_jobs())
-        all_jobs.extend(self.fetch_remotar_jobs())
-        all_jobs.extend(self.fetch_adzuna_jobs())
-        all_jobs.extend(self.fetch_serpapi_google_jobs())
+        for nome, buscar in fontes.items():
+            try:
+                vagas = buscar()
+            except Exception as e:
+                vagas = []
+                print(f"❌ Fonte '{nome}' falhou: {type(e).__name__}: {e}")
 
-        # Deduplicação interna por ID
-        vagas_unicas = {job['id']: job for job in all_jobs}
+            self.contagem_por_fonte[nome] = len(vagas)
+            status = "✅" if vagas else "⚠️"
+            print(f"{status} {nome}: {len(vagas)} vaga(s)")
+            all_jobs.extend(vagas)
+
+        vagas_unicas = {job["id"]: job for job in all_jobs}
         resultado = list(vagas_unicas.values())
 
         if not resultado:
-            print("ℹ️ Nenhuma API/Scraper retornou vagas. Carregando MOCK...")
+            print("ℹ️ Nenhuma fonte retornou vagas. Carregando MOCK...")
             resultado = self.fetch_mock_jobs()
+            self.contagem_por_fonte["Mock"] = len(resultado)
 
         print(f"📊 Total de vagas únicas coletadas nesta rodada: {len(resultado)}")
         return resultado
 
-
+    
 if __name__ == "__main__":
     fetcher = JobFetcher()
     vagas = fetcher.get_all_jobs()

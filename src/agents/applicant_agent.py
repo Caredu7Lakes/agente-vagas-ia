@@ -75,9 +75,12 @@ class ApplicantAgent:
         REGRAS DE VALIDAÇÃO (qualquer violação implica "aprovado": false):
         {REGRAS_COMUNS}
         5. Identifique se existe um e-mail VÁLIDO de recrutador/empresa (ignorar no-reply/automáticos).
-        6. Classifique a TRILHA EXATAMENTE como 'ENG_IA', 'BACKEND_PYTHON' ou 'OUTRA'.
-        7. Calcule o Score de aderência de 0 a 100%.
-        8. Extraia a URL de aplicação da vaga presente no corpo do e-mail (campo "url_vaga").
+        6. Identifique se existe um e-mail VÁLIDO de recrutador/empresa (ignorar no-reply/automáticos).
+        7. Classifique a TRILHA EXATAMENTE como 'ENG_IA', 'BACKEND_PYTHON' ou 'OUTRA'.
+        8. Calcule o Score de aderência de 0 a 100%.
+        9. Extraia a URL de aplicação presente no corpo do e-mail (campo "url_vaga").
+           A URL deve começar com http:// ou https://. Se não houver uma URL completa
+           no corpo, retorne null. NUNCA invente ou parafraseie.
 
         Responda EXATAMENTE em formato JSON:
         {{
@@ -104,6 +107,11 @@ class ApplicantAgent:
 
             trilha_escolhida = dados.get("trilha")
 
+            # descarta URL inventada pela LLM (deve ser http/https)
+            url_vaga = dados.get("url_vaga")
+            if not url_vaga or not str(url_vaga).startswith("http"):
+                url_vaga = None
+
             has_email = dados.get("has_direct_email", False) and bool(dados.get("target_email"))
             score_ok = dados.get("score_aderencia", 0) >= SCORE_MINIMO
             senioridade_ok = not dados.get("senioridade_incompativel", True)
@@ -120,7 +128,7 @@ class ApplicantAgent:
                     "score": dados["score_aderencia"],
                     "resumo": dados["resumo_vaga"],
                     "localizacao": dados.get("localizacao"),
-                    "url_vaga": dados.get("url_vaga"),
+                    "url_vaga": url_vaga,
                     "motivo": None,
                 }
 
